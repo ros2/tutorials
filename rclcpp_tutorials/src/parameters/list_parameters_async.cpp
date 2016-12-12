@@ -46,7 +46,7 @@ int main(int argc, char ** argv)
   if (rclcpp::spin_until_future_complete(node, parameter_list_future) !=
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
-    printf("list_parameters service call failed, exiting example.");
+    printf("list_parameters service call failed, exiting tutorial.");
     return -1;
   }
   auto parameter_list = parameter_list_future.get();

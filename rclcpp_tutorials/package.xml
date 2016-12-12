@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
-  <name>rclcpp_examples</name>
+  <name>rclcpp_tutorials</name>
   <version>0.0.0</version>
-  <description>Package containing examples of how to use the rclcpp API.</description>
+  <description>Package containing tutorials showing how to use the rclcpp API.</description>
   <maintainer email="william@osrfoundation.org">William Woodall</maintainer>
   <license>Apache License 2.0</license>
 

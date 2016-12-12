@@ -138,10 +138,10 @@ int main(int argc, char ** argv)
       std::make_shared<rclcpp::intra_process_manager::IntraProcessManagerImpl<MyAllocator<>>>();
     // Constructs the intra-process manager with a custom allocator.
     context->get_sub_context<rclcpp::intra_process_manager::IntraProcessManager>(ipm_state);
-    node = rclcpp::Node::make_shared("allocator_example", true);
+    node = rclcpp::Node::make_shared("allocator_tutorial", true);
   } else {
     printf("Intra-process pipeline is OFF.\n");
-    node = rclcpp::Node::make_shared("allocator_example", false);
+    node = rclcpp::Node::make_shared("allocator_tutorial", false);
   }
 
   uint32_t counter = 0;
@@ -153,12 +153,12 @@ int main(int argc, char ** argv)
 
   // Create a custom allocator and pass the allocator to the publisher and subscriber.
   auto alloc = std::make_shared<MyAllocator<void>>();
-  auto publisher = node->create_publisher<std_msgs::msg::UInt32>("allocator_example", 10, alloc);
+  auto publisher = node->create_publisher<std_msgs::msg::UInt32>("allocator_tutorial", 10, alloc);
   auto msg_mem_strat =
     std::make_shared<rclcpp::message_memory_strategy::MessageMemoryStrategy<std_msgs::msg::UInt32,
     MyAllocator<>>>(alloc);
   auto subscriber = node->create_subscription<std_msgs::msg::UInt32>(
-    "allocator_example", 10, callback, nullptr, false, msg_mem_strat, alloc);
+    "allocator_tutorial", 10, callback, nullptr, false, msg_mem_strat, alloc);
 
   // Create a MemoryStrategy, which handles the allocations made by the Executor during the
   // execution path, and inject the MemoryStrategy into the Executor.

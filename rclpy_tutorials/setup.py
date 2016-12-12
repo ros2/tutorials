@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='rclpy_examples',
+    name='rclpy_tutorials',
     version='0.0.0',
     packages=[],
     py_modules=[
@@ -21,7 +21,7 @@ setup(
         'Programming Language :: Python',
         'Topic :: Software Development',
     ],
-    description='Package containing examples of how to use the rclpy API.',
+    description='Package containing tutorials showing how to use the rclpy API.',
     license='Apache License, Version 2.0',
     test_suite='test',
     entry_points={

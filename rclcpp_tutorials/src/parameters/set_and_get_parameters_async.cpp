@@ -39,7 +39,7 @@ int main(int argc, char ** argv)
   if (rclcpp::spin_until_future_complete(node, results) !=
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
-    printf("set_parameters service call failed. Exiting example.\n");
+    printf("set_parameters service call failed. Exiting tutorial.\n");
     return -1;
   }
   // Check to see if they were set.
@@ -54,7 +54,7 @@ int main(int argc, char ** argv)
   if (rclcpp::spin_until_future_complete(node, parameters) !=
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
-    printf("get_parameters service call failed. Exiting example.\n");
+    printf("get_parameters service call failed. Exiting tutorial.\n");
     return -1;
   }
   for (auto & parameter : parameters.get()) {

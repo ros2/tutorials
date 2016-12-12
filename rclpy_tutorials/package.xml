@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
-  <name>rclpy_examples</name>
+  <name>rclpy_tutorials</name>
   <version>0.0.0</version>
-  <description>Package containing examples of how to use the rclpy API.</description>
-  <maintainer email="esteve@osrfoundation.org">Esteve Fernandez</maintainer>
+  <description>Package containing tutorials showing how to use the rclpy API.</description>
+  <author email="esteve@osrfoundation.org">Esteve Fernandez</author>
+  <maintainer email="mikael@osrfoundation.org">Mikael Arguedas</maintainer>
   <license>Apache License 2.0</license>
 
   <exec_depend>example_interfaces</exec_depend>
