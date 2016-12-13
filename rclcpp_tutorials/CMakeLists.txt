@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(rclcpp_examples)
+project(rclcpp_tutorials)
 
 if(NOT WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
@@ -31,21 +31,21 @@ macro(targets)
     get_rclcpp_information("${rmw_implementation}" "rclcpp${target_suffix}")
   endif()
 
-  # Examples of Publish/Subscribe with Topics
+  # Tutorials of Publish/Subscribe with Topics
   custom_executable(topics talker)
   custom_executable(topics listener)
   custom_executable(topics listener_best_effort)
   custom_executable(topics imu_listener)
   ament_target_dependencies(imu_listener${target_suffix}
     "sensor_msgs")
-  custom_executable(topics allocator_example)
+  custom_executable(topics allocator_tutorial)
 
-  # Examples of Request/Response with Services
+  # Tutorials of Request/Response with Services
   custom_executable(services add_two_ints_client)
   custom_executable(services add_two_ints_client_async)
   custom_executable(services add_two_ints_server)
 
-  # Examples of Parameters with Asynchronous and Synchronous
+  # Tutorials of Parameters with Asynchronous and Synchronous
   custom_executable(parameters list_parameters)
   custom_executable(parameters list_parameters_async)
   custom_executable(parameters parameter_events)
@@ -63,7 +63,7 @@ if(BUILD_TESTING)
 
   # Add each test case.  Multi-executable tests can be specified in
   # semicolon-separated strings, like  exe1;exe2.
-  set(example_tests
+  set(tutorial_tests
     list_parameters_async
     list_parameters
     parameter_events_async
@@ -71,29 +71,29 @@ if(BUILD_TESTING)
     set_and_get_parameters_async
     set_and_get_parameters
     "talker:listener")
-  set(service_example_tests
+  set(service_tutorial_tests
     "add_two_ints_server:add_two_ints_client"
     "add_two_ints_server:add_two_ints_client_async")
 
   macro(tests)
-    set(example_tests_to_test ${example_tests})
-    list(APPEND example_tests_to_test ${service_example_tests})
+    set(tutorial_tests_to_test ${tutorial_tests})
+    list(APPEND tutorial_tests_to_test ${service_tutorial_tests})
 
-    foreach(example_test ${example_tests_to_test})
-      string(REPLACE ":" ";" example_executables "${example_test}")
+    foreach(tutorial_test ${tutorial_tests_to_test})
+      string(REPLACE ":" ";" tutorial_executables "${tutorial_test}")
       set(RCLCPP_EXAMPLES_EXPECTED_OUTPUT "")
-      foreach(executable ${example_executables})
+      foreach(executable ${tutorial_executables})
         list(APPEND RCLCPP_EXAMPLES_EXPECTED_OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/test/${executable}")
       endforeach()
 
       set(RCLCPP_EXAMPLES_EXECUTABLE "")
-      foreach(executable ${example_executables})
+      foreach(executable ${tutorial_executables})
         list(APPEND RCLCPP_EXAMPLES_EXECUTABLE "$<TARGET_FILE:${executable}${target_suffix}>")
       endforeach()
 
-      string(REPLACE ";" "_" exe_list_underscore "${example_executables}")
+      string(REPLACE ";" "_" exe_list_underscore "${tutorial_executables}")
       configure_file(
-        test/test_executables_example.py.in
+        test/test_executables_tutorial.py.in
         test_${exe_list_underscore}${target_suffix}.py.configured
         @ONLY
       )
@@ -102,13 +102,13 @@ if(BUILD_TESTING)
         INPUT "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}.py.configured"
       )
 
-      ament_add_nose_test(test_example_${exe_list_underscore}${target_suffix}
+      ament_add_nose_test(test_tutorial_${exe_list_underscore}${target_suffix}
         "${CMAKE_CURRENT_BINARY_DIR}/test_${exe_list_underscore}${target_suffix}_$<CONFIGURATION>.py"
         TIMEOUT 30
         ENV RCL_ASSERT_RMW_ID_MATCHES=${rmw_implementation})
-      foreach(executable ${example_executables})
+      foreach(executable ${tutorial_executables})
         set_property(
-          TEST test_example_${exe_list_underscore}${target_suffix}
+          TEST test_tutorial_${exe_list_underscore}${target_suffix}
           APPEND PROPERTY DEPENDS ${executable}${target_suffix})
       endforeach()
     endforeach()

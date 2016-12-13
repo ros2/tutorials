@@ -21,46 +21,40 @@ int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
 
-  auto node = rclcpp::Node::make_shared("set_and_get_parameters_async");
+  auto node = rclcpp::Node::make_shared("list_parameters_async");
 
-  // TODO(wjwwood): Make the parameter service automatically start with the node.
+  // TODO(esteve): Make the parameter service automatically start with the node.
   auto parameter_service = std::make_shared<rclcpp::parameter_service::ParameterService>(node);
 
   auto parameters_client = std::make_shared<rclcpp::parameter_client::AsyncParametersClient>(node);
 
-  // Set several different types of parameters.
+  // Set several differnet types of parameters.
   auto results = parameters_client->set_parameters({
     rclcpp::parameter::ParameterVariant("foo", 2),
     rclcpp::parameter::ParameterVariant("bar", "hello"),
     rclcpp::parameter::ParameterVariant("baz", 1.45),
+    rclcpp::parameter::ParameterVariant("foo.first", 8),
+    rclcpp::parameter::ParameterVariant("foo.second", 42),
     rclcpp::parameter::ParameterVariant("foobar", true),
   });
-  // Wait for the results.
-  if (rclcpp::spin_until_future_complete(node, results) !=
-    rclcpp::executor::FutureReturnCode::SUCCESS)
-  {
-    printf("set_parameters service call failed. Exiting example.\n");
-    return -1;
-  }
-  // Check to see if they were set.
-  for (auto & result : results.get()) {
-    if (!result.successful) {
-      std::cerr << "Failed to set parameter: " << result.reason << std::endl;
-    }
-  }
+  // Wait for the result.
+  rclcpp::spin_until_future_complete(node, results);
 
-  // Get a few of the parameters just set.
-  auto parameters = parameters_client->get_parameters({"foo", "baz"});
-  if (rclcpp::spin_until_future_complete(node, parameters) !=
+  // List the details of a few parameters up to a namespace depth of 10.
+  auto parameter_list_future = parameters_client->list_parameters({"foo", "bar"}, 10);
+
+  if (rclcpp::spin_until_future_complete(node, parameter_list_future) !=
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
-    printf("get_parameters service call failed. Exiting example.\n");
+    printf("list_parameters service call failed, exiting tutorial.");
     return -1;
   }
-  for (auto & parameter : parameters.get()) {
-    std::cout << "Parameter name: " << parameter.get_name() << std::endl;
-    std::cout << "Parameter value (" << parameter.get_type_name() << "): " <<
-      parameter.value_to_string() << std::endl;
+  auto parameter_list = parameter_list_future.get();
+  for (auto & name : parameter_list.names) {
+    std::cout << "Parameter name: " << name << std::endl;
+  }
+  for (auto & prefix : parameter_list.prefixes) {
+    std::cout << "Parameter prefix: " << prefix << std::endl;
   }
 
   return 0;
