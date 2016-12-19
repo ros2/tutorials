@@ -100,6 +100,11 @@ void * operator new(std::size_t size)
   return std::malloc(size);
 }
 
+void operator delete(void * ptr, size_t size) noexcept
+{
+  (void)size;
+  operator delete(ptr);
+}
 
 void operator delete(void * ptr) noexcept
 {
@@ -108,7 +113,6 @@ void operator delete(void * ptr) noexcept
       global_runtime_deallocs++;
     }
     std::free(ptr);
-    ptr = nullptr;
   }
 }
 
