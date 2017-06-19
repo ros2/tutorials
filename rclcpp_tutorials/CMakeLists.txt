@@ -21,7 +21,7 @@ function(custom_executable subfolder target)
     "rclcpp${target_suffix}"
     "std_msgs")
   install(TARGETS ${target}${target_suffix}
-    DESTINATION bin)
+    DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
 macro(targets)

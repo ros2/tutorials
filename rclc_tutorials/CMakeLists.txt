@@ -25,23 +25,23 @@ macro(targets)
     get_rcl_information("${rmw_implementation}" "rcl${target_suffix}")
   endif()
 
-  add_executable(talker_c${target_suffix}
+  add_executable(talker${target_suffix}
     src/talker.c)
-  ament_target_dependencies(talker_c${target_suffix}
+  ament_target_dependencies(talker${target_suffix}
     "rclc${target_suffix}"
     "rmw_implementation"
     "std_msgs")
-  install(TARGETS talker_c${target_suffix}
-    DESTINATION bin)
+  install(TARGETS talker${target_suffix}
+    DESTINATION lib/${PROJECT_NAME})
 
-  add_executable(listener_c${target_suffix}
+  add_executable(listener${target_suffix}
     src/listener.c)
-  ament_target_dependencies(listener_c${target_suffix}
+  ament_target_dependencies(listener${target_suffix}
     "rclc${target_suffix}"
     "rmw_implementation"
     "std_msgs")
-  install(TARGETS listener_c${target_suffix}
-    DESTINATION bin)
+  install(TARGETS listener${target_suffix}
+    DESTINATION lib/${PROJECT_NAME})
 endmacro()
 
 call_for_each_rmw_implementation(targets GENERATE_DEFAULT)
