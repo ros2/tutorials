@@ -12,22 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <iostream>
 #include <memory>
+#include <sstream>
 
 #include "rclcpp/rclcpp.hpp"
 
+using namespace std::chrono_literals;
+
 int main(int argc, char ** argv)
 {
+  // Force flush of the stdout buffer.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   rclcpp::init(argc, argv);
 
   auto node = rclcpp::Node::make_shared("list_parameters");
 
   // TODO(esteve): Make the parameter service automatically start with the node.
-  auto parameter_service = std::make_shared<rclcpp::parameter_service::ParameterService>(node);
+  auto parameter_service = std::make_shared<rclcpp::ParameterService>(node);
 
-  auto parameters_client = std::make_shared<rclcpp::parameter_client::SyncParametersClient>(node);
+  auto parameters_client = std::make_shared<rclcpp::SyncParametersClient>(node);
+  while (!parameters_client->wait_for_service(1s)) {
+    if (!rclcpp::ok()) {
+      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.")
+      return 0;
+    }
+    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...")
+  }
 
+  RCLCPP_INFO(node->get_logger(), "Setting parameters...")
   // Set several differnet types of parameters.
   auto set_parameters_results = parameters_client->set_parameters({
     rclcpp::parameter::ParameterVariant("foo", 2),
@@ -38,14 +51,22 @@ int main(int argc, char ** argv)
     rclcpp::parameter::ParameterVariant("foobar", true),
   });
 
+  RCLCPP_INFO(node->get_logger(), "Listing parameters...")
   // List the details of a few parameters up to a namespace depth of 10.
   auto parameters_and_prefixes = parameters_client->list_parameters({"foo", "bar"}, 10);
+
+  std::stringstream ss;
+  ss << "\nParameter names:";
   for (auto & name : parameters_and_prefixes.names) {
-    std::cout << "Parameter name: " << name << std::endl;
+    ss << "\n " << name;
   }
+  ss << "\nParameter prefixes:";
   for (auto & prefix : parameters_and_prefixes.prefixes) {
-    std::cout << "Parameter prefix: " << prefix << std::endl;
+    ss << "\n " << prefix;
   }
+  RCLCPP_INFO(node->get_logger(), ss.str().c_str())
+
+  rclcpp::shutdown();
 
   return 0;
 }

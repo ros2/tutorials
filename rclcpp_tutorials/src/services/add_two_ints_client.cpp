@@ -22,10 +22,10 @@
 
 using namespace std::chrono_literals;
 
-// TODO(wjwwood): make this into a method of rclcpp::client::Client.
+// TODO(wjwwood): make this into a method of rclcpp::Client.
 example_interfaces::srv::AddTwoInts_Response::SharedPtr send_request(
   rclcpp::Node::SharedPtr node,
-  rclcpp::client::Client<example_interfaces::srv::AddTwoInts>::SharedPtr client,
+  rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedPtr client,
   example_interfaces::srv::AddTwoInts_Request::SharedPtr request)
 {
   auto result = client->async_send_request(request);
