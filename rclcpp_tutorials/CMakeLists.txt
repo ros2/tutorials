@@ -15,47 +15,40 @@ find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 
 function(custom_executable subfolder target)
-  add_executable(${target}${target_suffix} src/${subfolder}/${target}.cpp)
-  ament_target_dependencies(${target}${target_suffix}
+  add_executable(${target} src/${subfolder}/${target}.cpp)
+  ament_target_dependencies(${target}
     "example_interfaces"
-    "rclcpp${target_suffix}"
+    "rclcpp"
     "std_msgs")
-  install(TARGETS ${target}${target_suffix}
+  install(TARGETS ${target}
     DESTINATION lib/${PROJECT_NAME})
 endfunction()
 
-macro(targets)
-  if(NOT target_suffix STREQUAL "")
-    get_rclcpp_information("${rmw_implementation}" "rclcpp${target_suffix}")
-  endif()
+# Tutorials of Publish/Subscribe with Topics
+custom_executable(topics talker)
+custom_executable(topics listener)
+custom_executable(topics listener_best_effort)
+custom_executable(topics imu_listener)
+ament_target_dependencies(imu_listener
+  "sensor_msgs")
+custom_executable(topics allocator_tutorial)
 
-  # Tutorials of Publish/Subscribe with Topics
-  custom_executable(topics talker)
-  custom_executable(topics listener)
-  custom_executable(topics listener_best_effort)
-  custom_executable(topics imu_listener)
-  ament_target_dependencies(imu_listener${target_suffix}
-    "sensor_msgs")
-  custom_executable(topics allocator_tutorial)
+# Tutorials of Request/Response with Services
+custom_executable(services add_two_ints_client)
+custom_executable(services add_two_ints_client_async)
+custom_executable(services add_two_ints_server)
 
-  # Tutorials of Request/Response with Services
-  custom_executable(services add_two_ints_client)
-  custom_executable(services add_two_ints_client_async)
-  custom_executable(services add_two_ints_server)
+# Tutorials of Parameters with Asynchronous and Synchronous
+custom_executable(parameters list_parameters)
+custom_executable(parameters list_parameters_async)
+custom_executable(parameters parameter_events)
+custom_executable(parameters parameter_events_async)
+custom_executable(parameters set_and_get_parameters)
+custom_executable(parameters set_and_get_parameters_async)
+custom_executable(parameters ros2param)
 
-  # Tutorials of Parameters with Asynchronous and Synchronous
-  custom_executable(parameters list_parameters)
-  custom_executable(parameters list_parameters_async)
-  custom_executable(parameters parameter_events)
-  custom_executable(parameters parameter_events_async)
-  custom_executable(parameters set_and_get_parameters)
-  custom_executable(parameters set_and_get_parameters_async)
-  custom_executable(parameters ros2param)
-endmacro()
-
-call_for_each_rmw_implementation(targets GENERATE_DEFAULT)
-
-if(BUILD_TESTING)
+if(0)
+# if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 

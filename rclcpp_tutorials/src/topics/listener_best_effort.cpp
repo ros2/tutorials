@@ -12,20 +12,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <iostream>
+#include <cstdio>
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
+class ListenerBestEffort : public rclcpp::Node
+{
+public:
+  ListenerBestEffort()
+  : Node("listener")
+  {
+    auto callback =
+      [this](const typename std_msgs::msg::String::SharedPtr msg) -> void
+      {
+        RCLCPP_INFO(this->get_logger(), "I heard: [%s]", msg->data.c_str())
+      };
+
+    sub_ = create_subscription<std_msgs::msg::String>(
+      "chatter", callback, rmw_qos_profile_sensor_data);
+  }
+
+private:
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
+};
+
 int main(int argc, char * argv[])
 {
+  // Force flush of the stdout buffer.
+  setvbuf(stdout, NULL, _IONBF, BUFSIZ);
+
   rclcpp::init(argc, argv);
-  auto node = rclcpp::Node::make_shared("listener");
-  auto sub = node->create_subscription<std_msgs::msg::String>(
-    "chatter", [](const std_msgs::msg::String::SharedPtr msg) -> void {
-    printf("I heard: [%s]\n", msg->data.c_str());
-  }, rmw_qos_profile_sensor_data);
+  auto node = std::make_shared<ListenerBestEffort>();
   rclcpp::spin(node);
+  rclcpp::shutdown();
   return 0;
 }
