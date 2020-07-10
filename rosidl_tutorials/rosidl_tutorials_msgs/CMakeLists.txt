@@ -8,24 +8,24 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 # find the ROS message code generators
- find_package(rosidl_default_generators REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 
 # declare the message files to generate code for
- set(msg_files
-   "msg/Contact.msg"
-   "msg/NewInROS2.msg"
- )
+set(msg_files
+  "msg/Contact.msg"
+  "msg/NewInROS2.msg"
+)
 
 # declare the service files to generate code for
- set(srv_files
-   "srv/AddTwoFloats.srv"
- )
+set(srv_files
+  "srv/AddTwoFloats.srv"
+)
 
- rosidl_generate_interfaces(${PROJECT_NAME}
-   ${msg_files}
-   ${srv_files}
- )
+rosidl_generate_interfaces(${PROJECT_NAME}
+  ${msg_files}
+  ${srv_files}
+)
 
- ament_export_dependencies(rosidl_default_runtime)
+ament_export_dependencies(rosidl_default_runtime)
 
 ament_package()
